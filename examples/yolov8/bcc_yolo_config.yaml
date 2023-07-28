@@ -1,0 +1,5 @@
+path: /home/piotr/datasets/vision/blood_cell_count_and_types_detection/
+train: images/train
+val: images/valid
+nc: 3
+names: ['Platelets', 'RBC', 'WBC']
