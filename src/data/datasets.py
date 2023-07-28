@@ -2,22 +2,24 @@ import pathlib
 from torch.utils.data import Dataset
 from PIL import Image
 import numpy as np
+from typing import Callable
 
 
 class BloodCellDataset(Dataset):
     
     """https://www.kaggle.com/datasets/balakrishcodes/blood-cell-count-and-typesdetection"""
     
-    def __init__(self, path: pathlib.Path, is_train: bool):
+    def __init__(self, path: pathlib.Path, is_train: bool, transform: Callable | None = None):
         super().__init__()
         self.path = path
         self.train_or_valid = "train" if is_train else "valid" 
         self.labels = self._load_labels()
         self.image_paths = self._load_image_paths()
+        self.transform = transform
         
         
     def _load_image_paths(self):
-        paths = list(self.path.glob(f'images/images/{self.train_or_valid}/*.jpg'))
+        paths = list(self.path.glob(f'images/{self.train_or_valid}/*.jpg'))
         return paths
         
         
@@ -26,7 +28,7 @@ class BloodCellDataset(Dataset):
             target, x_center, y_center, w, h =  line.split()
             return int(target), float(x_center), float(y_center), float(w), float(h)
         labels = {}
-        paths = list(self.path.glob(f'labels/labels/{self.train_or_valid}/*.txt'))
+        paths = list(self.path.glob(f'labels/{self.train_or_valid}/*.txt'))
         for path in paths:
             id_ = path.stem
             with open(path, "r") as file:
